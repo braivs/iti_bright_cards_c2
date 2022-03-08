@@ -1,8 +1,8 @@
 {
   "name": "iti_bright_cards_c2",
-  "homepage": "https://brightwiths.github.io/iti_bright_cards_c2",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://krutko77.github.io/iti_bright_cards_c2/",
   "dependencies": {
     "@emotion/react": "^11.7.1",
     "@emotion/styled": "^11.6.0",
