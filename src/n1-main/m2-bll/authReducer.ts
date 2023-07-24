@@ -1,9 +1,10 @@
-import {authAPI} from "./api/api";
-import {Dispatch} from "redux";
-import {setProfileAC, SetProfileType} from "./profileReducer";
-import {setAppStatusAC, SetAppStatusAT, setIsInitializeAC} from "./appReducer";
-import {AppStoreType} from "./store";
-import {ThunkAction} from "redux-thunk";
+import {authAPI} from "./api/api"
+import {Dispatch} from "redux"
+import {setProfileAC, SetProfileType} from "./profileReducer"
+import {setAppStatusAC, SetAppStatusAT, setIsInitializeAC} from "./appReducer"
+import {AppStoreType} from "./store"
+import {ThunkAction} from "redux-thunk"
+import {createSlice, PayloadAction} from "@reduxjs/toolkit"
 
 let initialState: InitialStateType = {
     isLoggedIn: false,
@@ -11,36 +12,36 @@ let initialState: InitialStateType = {
     avatar: '',
 }
 
-export const authReducer = (state: InitialStateType = initialState, action: ActionsType): InitialStateType => {
-    switch (action.type) {
-        case 'AUTH/SET-IS-LOGGED-IN':
-            return {...state, isLoggedIn: action.value}
-        case 'AUTH/SET-IS-ERROR':
-            return {...state, error: action.error}
-        case "AUTH/PROFILE-UPDATE":
-            return {...state, avatar: action.avatar}
-        default:
-            return {...state}
+export const authSlice = createSlice({
+    name: 'auth',
+    initialState: initialState,
+    reducers: {
+        setIsLoggedInAC(state, action: PayloadAction<{ value: boolean }>) {
+            state.isLoggedIn = action.payload.value
+        },
+        setIsErrorAC(state, action: PayloadAction<{ error: string | null }>) {
+            state.error = action.payload.error
+        },
+        profileUpdateAC(state, action: PayloadAction<{ avatar: string }>) {
+            state.avatar = action.payload.avatar
+        }
     }
-}
+})
 
-// ActionsCreators
-export const setIsLoggedInAC = (value: boolean) => {
-    return ({type: 'AUTH/SET-IS-LOGGED-IN', value} as const)
-}
-export const setIsErrorAC = (error: string | null) => {
-    return ({type: 'AUTH/SET-IS-ERROR', error} as const)
-}
-export const profileUpdateAC = (avatar: string) => {
-    return ({type: 'AUTH/PROFILE-UPDATE', avatar} as const)
-}
+export const authReducer = authSlice.reducer
+
+export const {
+    setIsLoggedInAC,
+    profileUpdateAC,
+    setIsErrorAC
+} = authSlice.actions
 
 // Thunks
 export const LoginTC = (email: string, password: string, rememberMe: boolean) => (dispatch: Dispatch<ActionsType>) => {
     dispatch(setAppStatusAC({status: 'loading'}))
     authAPI.login({email, password, rememberMe})
         .then(res => {
-                dispatch(setIsLoggedInAC(true))
+                dispatch(setIsLoggedInAC({value: true}))
                 dispatch(setProfileAC(res.data))
             }
         )
@@ -56,12 +57,12 @@ export const InitializeTC = () => (dispatch: Dispatch) => {
     dispatch(setAppStatusAC({status: 'loading'} ))
     authAPI.me()
         .then(res => {
-                dispatch(setIsLoggedInAC(true))
+                dispatch(setIsLoggedInAC({value: true}))
                 dispatch(setProfileAC(res.data))
             }
         )
         .catch(() => {
-                dispatch(setIsLoggedInAC(false))
+                dispatch(setIsLoggedInAC({value: false}))
             }
         )
         .finally(() => {
@@ -73,8 +74,8 @@ export const LogoutTC = () => (dispatch: Dispatch) => {
     dispatch(setAppStatusAC({status: 'loading'} ))
     authAPI.logout()
         .then(() => {
-                dispatch(setIsLoggedInAC(false))
-                dispatch(setIsErrorAC(null))
+                dispatch(setIsLoggedInAC({value: false}))
+                dispatch(setIsErrorAC({error: null}))
             }
         )
         .catch(e => {
@@ -91,7 +92,7 @@ export const UpdateProfileTC = (name: string, avatar: string): ThunkType =>
     dispatch(setAppStatusAC({status: 'loading'} ))
     authAPI.updateProfile(name, avatar)
         .then(() => {
-            dispatch(profileUpdateAC(avatar))
+            dispatch(profileUpdateAC({avatar}))
         })
         .then(() => {
             dispatch(InitializeTC())

@@ -97,7 +97,7 @@ export default function ProfileForm() {
                     setWidth(image.width)
                     if (image.width === 96 && image.height === 96) {
                         setError(false)
-                        dispatch(profileUpdateAC(reader.result as string))
+                        dispatch(profileUpdateAC({avatar: reader.result as string}))
                     } else setError(true)
                 }
 
