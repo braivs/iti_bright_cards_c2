@@ -11,6 +11,7 @@
     "@mui/icons-material": "^5.2.4",
     "@mui/material": "^5.2.4",
     "@mui/styled-engine-sc": "^5.1.0",
+    "@reduxjs/toolkit": "^1.9.5",
     "@types/react-html-parser": "^2.0.2",
     "@types/yup": "^0.29.13",
     "axios": "^0.23.0",
