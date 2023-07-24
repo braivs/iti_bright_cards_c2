@@ -37,7 +37,7 @@ export const setRegisterMessage = (message: string | null) =>
 
 export const createNewUser = (email: string, password: string) => (dispatch: Dispatch<ActionsType /*| SetAppErrorActionType | SetAppStatusActionType*/>) => {
     dispatch(setRegisterStatus('loading'))
-    dispatch(setAppStatusAC('loading'))
+    dispatch(setAppStatusAC({status: 'loading'} ))
     registrationAPI.registerUser(email, password)
         .then(res => {
             dispatch(setRegisterMessage('success!'))
@@ -56,7 +56,7 @@ export const createNewUser = (email: string, password: string) => (dispatch: Dis
             }, 2000)
         })
         .finally(() => {
-            dispatch(setAppStatusAC('succeeded'))
+            dispatch(setAppStatusAC({status: 'succeeded'} ))
         })
 }
 

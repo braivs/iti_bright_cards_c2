@@ -23,7 +23,7 @@ export const passwordRecoveryReducer = (state = initialState, action: ActionType
 }
 
 export const sendPassRecoveryTC = (email: string) => (dispatch: Dispatch<ActionType>) => {
-    dispatch(setAppStatusAC('loading'))
+    dispatch(setAppStatusAC({status: 'loading'}))
     RecoveryAPI.recoveryPass(email)
         .then((res) => {
             if (res.data.success) {
@@ -35,12 +35,12 @@ export const sendPassRecoveryTC = (email: string) => (dispatch: Dispatch<ActionT
             dispatch(setErrorAC(e.response.data.error))
         })
         .finally(() => {
-            dispatch(setAppStatusAC('succeeded'))
+            dispatch(setAppStatusAC({status: 'succeeded'}))
         })
 }
 
 export const setNewPassTC = (password: string, token: string) => (dispatch: Dispatch<ActionType>) => {
-    dispatch(setAppStatusAC('loading'))
+    dispatch(setAppStatusAC({ status: 'loading' }))
     RecoveryAPI.newPass(password, token)
         .then((res) => {
             dispatch(setNewPassAC(res.data.info))
@@ -51,7 +51,7 @@ export const setNewPassTC = (password: string, token: string) => (dispatch: Disp
             dispatch(setErrorAC(e.response.data.error))
         })
         .finally(() => {
-            dispatch(setAppStatusAC('succeeded'))
+            dispatch(setAppStatusAC({status: 'succeeded'}))
         })
 }
 

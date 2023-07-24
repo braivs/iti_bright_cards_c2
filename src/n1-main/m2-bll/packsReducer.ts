@@ -34,7 +34,7 @@ export const getPacksTC = (): ThunkType => (dispatch: Dispatch<ActionType>, getS
     const pageCount = getState().findAndPagination.cardPacks.pageCount.toString()
     const user_id = getState().packs.packUser_id
 
-    dispatch(setAppStatusAC('loading'))
+    dispatch(setAppStatusAC({status: 'loading'}))
     return packsAPI.getPacks(user_id, pageCount, page, min, max, packName, sortPacks)
         .then((res) => {
             dispatch(getPacksAC(res.data.cardPacks))
@@ -43,12 +43,12 @@ export const getPacksTC = (): ThunkType => (dispatch: Dispatch<ActionType>, getS
             dispatch(setErrorAC(e.response.data.error))
         })
         .finally(() => {
-            dispatch(setAppStatusAC('succeeded'))
+            dispatch(setAppStatusAC({status: 'succeeded'} ))
         })
 }
 
 export const addPacksTC = (cardPackName: string): ThunkType => (dispatch: ThunkDispatch<AppStoreType, unknown, ActionType>) => {
-    dispatch(setAppStatusAC('loading'))
+    dispatch(setAppStatusAC({ status: 'loading'}))
     packsAPI.addPacks(false, cardPackName)
         .then((res) => {
             dispatch(addPacksAC(cardPackName))
@@ -57,13 +57,13 @@ export const addPacksTC = (cardPackName: string): ThunkType => (dispatch: ThunkD
         dispatch(setErrorAC(e.response.data.error))
     })
         .finally(() => {
-            dispatch(setAppStatusAC('succeeded'))
+            dispatch(setAppStatusAC({status: 'succeeded'}))
         })
 }
 
 
 export const delPacksTC = (id: string) => (dispatch: ThunkDispatch<AppStoreType, unknown, ActionType>) => {
-    dispatch(setAppStatusAC('loading'))
+    dispatch(setAppStatusAC({status: 'loading'}))
     packsAPI.delPacks(id)
         .then(() => {
             dispatch(getPacksTC())
@@ -71,11 +71,11 @@ export const delPacksTC = (id: string) => (dispatch: ThunkDispatch<AppStoreType,
         dispatch(setErrorAC(e.response.data.error))
     })
         .finally(() => {
-            dispatch(setAppStatusAC('succeeded'))
+            dispatch(setAppStatusAC({status: 'succeeded'}))
         })
 }
 export const updatePacksTC = (id: string, name: string) => (dispatch: ThunkDispatch<AppStoreType, unknown, ActionType>) => {
-    dispatch(setAppStatusAC('loading'))
+    dispatch(setAppStatusAC({status: 'loading'} ))
     packsAPI.updatePacks(id, name)
         .then(() => {
             dispatch(getPacksTC())
@@ -83,7 +83,7 @@ export const updatePacksTC = (id: string, name: string) => (dispatch: ThunkDispa
         dispatch(setErrorAC(e.response.data.error))
     })
         .finally(() => {
-            dispatch(setAppStatusAC('succeeded'))
+            dispatch(setAppStatusAC({status: 'succeeded'}))
         })
 }
 

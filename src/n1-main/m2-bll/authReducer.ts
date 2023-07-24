@@ -37,7 +37,7 @@ export const profileUpdateAC = (avatar: string) => {
 
 // Thunks
 export const LoginTC = (email: string, password: string, rememberMe: boolean) => (dispatch: Dispatch<ActionsType>) => {
-    dispatch(setAppStatusAC('loading'))
+    dispatch(setAppStatusAC({status: 'loading'}))
     authAPI.login({email, password, rememberMe})
         .then(res => {
                 dispatch(setIsLoggedInAC(true))
@@ -49,11 +49,11 @@ export const LoginTC = (email: string, password: string, rememberMe: boolean) =>
             }
         )
         .finally(() => {
-            dispatch(setAppStatusAC('succeeded'))
+            dispatch(setAppStatusAC({ status: 'succeeded'}))
         })
 }
 export const InitializeTC = () => (dispatch: Dispatch) => {
-    dispatch(setAppStatusAC('loading'))
+    dispatch(setAppStatusAC({status: 'loading'} ))
     authAPI.me()
         .then(res => {
                 dispatch(setIsLoggedInAC(true))
@@ -65,12 +65,12 @@ export const InitializeTC = () => (dispatch: Dispatch) => {
             }
         )
         .finally(() => {
-            dispatch(setIsInitializeAC(true))
-            dispatch(setAppStatusAC('succeeded'))
+            dispatch(setIsInitializeAC({ isInitilize: true}))
+            dispatch(setAppStatusAC({ status: 'succeeded'}))
         })
 }
 export const LogoutTC = () => (dispatch: Dispatch) => {
-    dispatch(setAppStatusAC('loading'))
+    dispatch(setAppStatusAC({status: 'loading'} ))
     authAPI.logout()
         .then(() => {
                 dispatch(setIsLoggedInAC(false))
@@ -82,13 +82,13 @@ export const LogoutTC = () => (dispatch: Dispatch) => {
             }
         )
         .finally(() => {
-            dispatch(setAppStatusAC('succeeded'))
+            dispatch(setAppStatusAC({status: 'succeeded'} ))
         })
 }
 export const UpdateProfileTC = (name: string, avatar: string): ThunkType =>
     (dispatch, getState: () => AppStoreType) => {
     // const name = getState().profile.name
-    dispatch(setAppStatusAC('loading'))
+    dispatch(setAppStatusAC({status: 'loading'} ))
     authAPI.updateProfile(name, avatar)
         .then(() => {
             dispatch(profileUpdateAC(avatar))
@@ -97,7 +97,7 @@ export const UpdateProfileTC = (name: string, avatar: string): ThunkType =>
             dispatch(InitializeTC())
         })
         .finally(() => {
-            dispatch(setAppStatusAC('succeeded'))
+            dispatch(setAppStatusAC({status: 'succeeded'} ))
         })
 }
 

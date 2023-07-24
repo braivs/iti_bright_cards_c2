@@ -40,7 +40,7 @@ export const getCardsTC = (id: string): ThunkType => (dispatch: Dispatch<ActionT
     const cardQuestion = getState().findAndPagination.cards.questionText
     const pageCount = getState().findAndPagination.cards.pageCount.toString()
 
-    dispatch(setAppStatusAC('loading'))
+    dispatch(setAppStatusAC({status: 'loading'}))
     cardsAPI.getCards(id, pageCount, page, cardQuestion, sortCards)
         .then((res) => {
             if (res.data.cards) {
@@ -53,12 +53,12 @@ export const getCardsTC = (id: string): ThunkType => (dispatch: Dispatch<ActionT
             dispatch(setErrorAC(e.response.data.error))
         })
         .finally(() => {
-            dispatch(setAppStatusAC('succeeded'))
+            dispatch(setAppStatusAC({status: 'succeeded'}))
         })
 }
 export const addCardsTC = (id: string, question: string, answer: string): ThunkType =>
     (dispatch: ThunkDispatch<AppStoreType, unknown, ActionType>) => {
-        dispatch(setAppStatusAC('loading'))
+        dispatch(setAppStatusAC({status: 'loading'}))
         cardsAPI.addCards(id, question, answer)
             .then((res) => {
                 dispatch(getCardsTC(id))
@@ -66,12 +66,12 @@ export const addCardsTC = (id: string, question: string, answer: string): ThunkT
             dispatch(setErrorAC(e.response.data.error))
         })
             .finally(() => {
-                dispatch(setAppStatusAC('succeeded'))
+                dispatch(setAppStatusAC({status: 'succeeded'} ))
             })
     }
 
 export const delCardTC = (id: string, packId: string) => (dispatch: ThunkDispatch<AppStoreType, unknown, ActionType>) => {
-    dispatch(setAppStatusAC('loading'))
+    dispatch(setAppStatusAC({status: 'loading'}))
     cardsAPI.delCard(id)
         .then(() => {
             dispatch(getCardsTC(packId))
@@ -79,11 +79,11 @@ export const delCardTC = (id: string, packId: string) => (dispatch: ThunkDispatc
         dispatch(setErrorAC(e.response.data.error))
     })
         .finally(() => {
-            dispatch(setAppStatusAC('succeeded'))
+            dispatch(setAppStatusAC({status: 'succeeded'}))
         })
 }
 export const updateCardTC = (id: string, packId: string, question: string, answer: string) => (dispatch: ThunkDispatch<AppStoreType, unknown, ActionType>) => {
-    dispatch(setAppStatusAC('loading'))
+    dispatch(setAppStatusAC({status: 'loading'}))
     cardsAPI.updateCard(id, question, answer)
         .then(() => {
             dispatch(getCardsTC(packId))
@@ -91,11 +91,11 @@ export const updateCardTC = (id: string, packId: string, question: string, answe
         dispatch(setErrorAC(e.response.data.error))
     })
         .finally(() => {
-            dispatch(setAppStatusAC('succeeded'))
+            dispatch(setAppStatusAC({status: 'succeeded'}))
         })
 }
 export const updateGradeTC = (grade: number, card_id: string) => (dispatch: ThunkDispatch<AppStoreType, unknown, ActionType>) => {
-    dispatch(setAppStatusAC('loading'))
+    dispatch(setAppStatusAC({status: 'loading'}))
     return cardsAPI.updateGrade(grade, card_id)
         .then(() => {
             dispatch(updateGradeAC(grade, card_id))
@@ -103,7 +103,7 @@ export const updateGradeTC = (grade: number, card_id: string) => (dispatch: Thun
             dispatch(setErrorAC(e.response.data.error))
         })
         .finally(() => {
-            dispatch(setAppStatusAC('succeeded'))
+            dispatch(setAppStatusAC({status: 'succeeded'}))
         })
 }
 

@@ -1,3 +1,5 @@
+import {createSlice, PayloadAction} from "@reduxjs/toolkit"
+
 let initialState: InitialStateType = {
     isInitilize: false,
     error:null,
@@ -5,34 +7,32 @@ let initialState: InitialStateType = {
     status: 'idle',
 }
 
-export const appReducer = (state: InitialStateType = initialState, action: ActionsType): InitialStateType => {
-    switch (action.type) {
-        case 'APP/SET-IS-INITIALIZE':
-            return {...state, isInitilize: action.isInitilize}
-        case 'APP/SET-ERROR':
-            return {...state, error: action.error}
-        case 'APP/SET-MESSAGE':
-            return {...state, message: action.message}
-        case 'APP/SET-STATUS':
-            return {...state, status: action.status}
-        default:
-            return {...state}
+export const appSlice = createSlice({
+    name: 'app',
+    initialState: initialState,
+    reducers: {
+        setIsInitializeAC(state, action: PayloadAction<{ isInitilize: boolean }>) {
+            state.isInitilize = action.payload.isInitilize
+        },
+        setAppError(state, action: PayloadAction<{error: string}>) {
+            state.error = action.payload.error
+        },
+        setAppMessage(state, action: PayloadAction<{message: string}>) {
+            state.message = action.payload.message
+        },
+        setAppStatusAC(state, action: PayloadAction<{status: RequestStatusType}>) {
+            state.status = action.payload.status
+        }
     }
-}
+})
 
-export const setIsInitializeAC = (isInitilize: boolean) => {
-    return ({type: 'APP/SET-IS-INITIALIZE', isInitilize} as const)
-}
-
-export const setAppError = (error: string) => {
-    return ({type: 'APP/SET-ERROR', error} as const)
-}
-
-export const setAppMessage = (message: string) => {
-    return ({type: 'APP/SET-MESSAGE', message} as const)
-}
-export const setAppStatusAC = (status: RequestStatusType) => ({type: 'APP/SET-STATUS', status} as const)
-
+export const appReducer = appSlice.reducer
+export const {
+    setAppStatusAC,
+    setIsInitializeAC,
+    setAppMessage,
+    setAppError
+} = appSlice.actions
 
 export type RequestStatusType = 'idle' | 'loading' | 'succeeded' | 'failed'
 // Types
@@ -44,11 +44,3 @@ type InitialStateType = {
 }
 
 export type SetAppStatusAT = ReturnType<typeof setAppStatusAC>
-
-type ActionsType =
-    | ReturnType<typeof setIsInitializeAC>
-    | ReturnType<typeof setAppError>
-    | ReturnType<typeof setAppMessage>
-    | SetAppStatusAT
-
-
