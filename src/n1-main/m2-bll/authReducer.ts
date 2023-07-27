@@ -4,7 +4,7 @@ import {setProfileAC, SetProfileType} from "./profileReducer"
 import {setAppStatusAC, SetAppStatusAT, setIsInitializeAC} from "./appReducer"
 import {AppStoreType} from "./store"
 import {ThunkAction} from "redux-thunk"
-import {createSlice, PayloadAction} from "@reduxjs/toolkit"
+import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit"
 
 let initialState: InitialStateType = {
     isLoggedIn: false,
@@ -37,24 +37,29 @@ export const {
 } = authSlice.actions
 
 // Thunks
-export const LoginTC = (email: string, password: string, rememberMe: boolean) => (dispatch: Dispatch<ActionsType>) => {
-    dispatch(setAppStatusAC({status: 'loading'}))
-    authAPI.login({email, password, rememberMe})
-        .then(res => {
-                dispatch(setIsLoggedInAC({value: true}))
-                dispatch(setProfileAC(res.data))
-            }
-        )
-        .catch(e => {
-                dispatch(setIsErrorAC(e.response.data.error))
-            }
-        )
-        .finally(() => {
-            dispatch(setAppStatusAC({ status: 'succeeded'}))
-        })
-}
+export const LoginTC = createAsyncThunk(
+    'auth/LoginTC',
+    async (param: { email: string, password: string, rememberMe: boolean }, thunkAPI) => {
+        thunkAPI.dispatch(setAppStatusAC({status: 'loading'}))
+        authAPI.login({email: param.email, password: param.password, rememberMe: param.rememberMe})
+            .then(res => {
+                    thunkAPI.dispatch(setIsLoggedInAC({value: true}))
+                    thunkAPI.dispatch(setProfileAC(res.data))
+                }
+            )
+            .catch(e => {
+                    thunkAPI.dispatch(setIsErrorAC(e.response.data.error))
+                }
+            )
+            .finally(() => {
+                thunkAPI.dispatch(setAppStatusAC({status: 'succeeded'}))
+            })
+
+    }
+)
+
 export const InitializeTC = () => (dispatch: Dispatch) => {
-    dispatch(setAppStatusAC({status: 'loading'} ))
+    dispatch(setAppStatusAC({status: 'loading'}))
     authAPI.me()
         .then(res => {
                 dispatch(setIsLoggedInAC({value: true}))
@@ -66,12 +71,12 @@ export const InitializeTC = () => (dispatch: Dispatch) => {
             }
         )
         .finally(() => {
-            dispatch(setIsInitializeAC({ isInitilize: true}))
-            dispatch(setAppStatusAC({ status: 'succeeded'}))
+            dispatch(setIsInitializeAC({isInitilize: true}))
+            dispatch(setAppStatusAC({status: 'succeeded'}))
         })
 }
 export const LogoutTC = () => (dispatch: Dispatch) => {
-    dispatch(setAppStatusAC({status: 'loading'} ))
+    dispatch(setAppStatusAC({status: 'loading'}))
     authAPI.logout()
         .then(() => {
                 dispatch(setIsLoggedInAC({value: false}))
@@ -83,24 +88,24 @@ export const LogoutTC = () => (dispatch: Dispatch) => {
             }
         )
         .finally(() => {
-            dispatch(setAppStatusAC({status: 'succeeded'} ))
+            dispatch(setAppStatusAC({status: 'succeeded'}))
         })
 }
 export const UpdateProfileTC = (name: string, avatar: string): ThunkType =>
     (dispatch, getState: () => AppStoreType) => {
-    // const name = getState().profile.name
-    dispatch(setAppStatusAC({status: 'loading'} ))
-    authAPI.updateProfile(name, avatar)
-        .then(() => {
-            dispatch(profileUpdateAC({avatar}))
-        })
-        .then(() => {
-            dispatch(InitializeTC())
-        })
-        .finally(() => {
-            dispatch(setAppStatusAC({status: 'succeeded'} ))
-        })
-}
+        // const name = getState().profile.name
+        dispatch(setAppStatusAC({status: 'loading'}))
+        authAPI.updateProfile(name, avatar)
+            .then(() => {
+                dispatch(profileUpdateAC({avatar}))
+            })
+            .then(() => {
+                dispatch(InitializeTC())
+            })
+            .finally(() => {
+                dispatch(setAppStatusAC({status: 'succeeded'}))
+            })
+    }
 
 // Types
 type InitialStateType = {

@@ -47,7 +47,7 @@ export default function LoginForm() {
             rememberMe: false
         },
         onSubmit: values => {
-            dispatch(LoginTC(values.email, values.password, values.rememberMe));
+            dispatch(LoginTC({email: values.email, password: values.password, rememberMe: values.rememberMe}));
         },
         validate: (values) => {
             const errors: FormikErrorType = {};
