@@ -1,5 +1,5 @@
 import {Dispatch} from "redux";
-import {cardsAPI} from "./api/api";
+import {cardsAPI, useGetCardsQuery} from "./api/api"
 import {AppStoreType} from "./store";
 import {
     setCardsTotalCountAC,
@@ -41,6 +41,9 @@ export const getCardsTC = (id: string): ThunkType => (dispatch: Dispatch<ActionT
     const pageCount = getState().findAndPagination.cards.pageCount.toString()
 
     dispatch(setAppStatusAC({status: 'loading'}))
+    const resDataUpg = useGetCardsQuery({id, pageCount, page, cardQuestion, sortCards })
+    console.log('resDataUpg')
+    console.log(resDataUpg)
     cardsAPI.getCards(id, pageCount, page, cardQuestion, sortCards)
         .then((res) => {
             if (res.data.cards) {

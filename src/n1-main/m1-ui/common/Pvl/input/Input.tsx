@@ -50,5 +50,3 @@ type PropsType = DefaultInputPropsType & {
     autoComplete?: 'on' | 'off'
     setInputType?: React.Dispatch<React.SetStateAction<string>>
 }
-
-

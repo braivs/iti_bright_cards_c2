@@ -11,6 +11,7 @@ import {cardsReducer} from "./cardsReducer"
 import {findAndPaginationReducer} from "./findAndPaginationReducer"
 import {modalReducer} from "./modalReducer"
 import {configureStore} from "@reduxjs/toolkit"
+import {packsAPIUpg} from "./api/api"
 
 const rootReducer = combineReducers({
     testReducer: testReducer,
@@ -23,11 +24,12 @@ const rootReducer = combineReducers({
     cards: cardsReducer,
     findAndPagination: findAndPaginationReducer,
     modal: modalReducer,
+    [packsAPIUpg.reducerPath]: packsAPIUpg.reducer
 })
 
 export const store = configureStore({
     reducer: rootReducer,
-    middleware: getDefaultMiddleware => getDefaultMiddleware().prepend(thunkMiddleware)
+    middleware: getDefaultMiddleware => getDefaultMiddleware().prepend(thunkMiddleware).concat(packsAPIUpg.middleware)
 })
 
 export type AppStoreType = ReturnType<typeof rootReducer>

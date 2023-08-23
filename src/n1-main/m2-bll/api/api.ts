@@ -1,7 +1,8 @@
-import axios, {AxiosResponse} from "axios";
-import {PackType} from "../packsReducer";
-import {CardType} from "../cardsReducer";
-import {SortCardsType, SortPackType} from "../findAndPaginationReducer";
+import axios, {AxiosResponse} from "axios"
+import {PackType} from "../packsReducer"
+import {CardType} from "../cardsReducer"
+import {SortCardsType, SortPackType} from "../findAndPaginationReducer"
+import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react"
 
 const instance = axios.create({
     // baseURL: 'http://localhost:7542/2.0/',
@@ -9,9 +10,11 @@ const instance = axios.create({
     withCredentials: true,
 })
 
+const baseUrl = 'https://neko-back.herokuapp.com/2.0/'
+
 export const authAPI = {
     login(data: LoginType) {
-        return instance.post<AuthResponseType>('auth/login', data);
+        return instance.post<AuthResponseType>('auth/login', data)
     },
     me() {
         return instance.post<AuthResponseType>('/auth/me', {})
@@ -23,12 +26,27 @@ export const authAPI = {
         return instance.put('auth/me', {name, avatar})
     }
 }
+
+export const authAPIUpg = createApi({
+    reducerPath: 'authAPIUpg',
+    baseQuery: fetchBaseQuery({baseUrl: 'https://neko-back.herokuapp.com/2.0/'}),
+    endpoints: (builder) => ({
+        login: builder.mutation<AuthResponseType, { data: LoginType }>({
+            query: body => ({
+                url: `auth/login`,
+                method: 'POST',
+                body: body.data,
+            }),
+        }),
+    }),
+})
+
 export const registrationAPI = {
     registerUser(email: string, password: string) {
         return instance.post<{ title: string }, AxiosResponse<ResponseType>>('auth/register', {
             email: email,
             password: password
-        });
+        })
     },
 }
 export const RecoveryAPI = {
@@ -47,14 +65,14 @@ export const RecoveryAPI = {
             resetPasswordToken: token,
         })
     }
-};
+}
 
 export const packsAPI = {
-    getPacks(user_id:string,pageCount: string, page: number, min: number, max: number, packName: string, sortPacks: SortPackType) {
+    getPacks(user_id: string, pageCount: string, page: number, min: number, max: number, packName: string, sortPacks: SortPackType) {
         return instance.get<getPacksType>(`/cards/pack`, {
             params: {
-            user_id: (user_id ? user_id : ''),
-            pageCount, page, min, max, packName, sortPacks
+                user_id: (user_id ? user_id : ''),
+                pageCount, page, min, max, packName, sortPacks
             }
         })
     },
@@ -121,6 +139,27 @@ export const cardsAPI = {
     },
 }
 
+export const packsAPIUpg = createApi({
+    reducerPath: 'packsAPIUpg',
+    baseQuery: fetchBaseQuery({baseUrl}),
+    endpoints: (builder) => ({
+        getCards: builder.query<AuthResponseType, {
+            id: string,
+            pageCount: string,
+            page: number,
+            cardQuestion: string,
+            sortCards: SortCardsType
+        }>({
+            query: ({id, pageCount, page, cardQuestion, sortCards}) => ({
+                url: '/cards/card',
+                params: {id, pageCount, page, cardQuestion, sortCards},
+            }),
+        }),
+    }),
+})
+
+export const {useGetCardsQuery} = packsAPIUpg
+
 export type LoginType = {
     email: string,
     password: string,
@@ -146,14 +185,14 @@ export type recoveryType = {
 }
 
 export type getPacksType = {
-    user_id?:string
+    user_id?: string
     cardPacks: PackType[]
     cardPacksTotalCount: number // количество колод
     maxCardsCount: number
     minCardsCount: number
     page: number // выбранная страница
     pageCount: number // количество элементов на странице
-    error:string
+    error: string
 }
 export type getCardType = {
     cards: CardType[]
